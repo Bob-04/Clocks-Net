@@ -10,4 +10,8 @@
     <ProjectReference Include="..\Clocks.Shared\Clocks.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Tools\Controls\" />
+  </ItemGroup>
+
 </Project>

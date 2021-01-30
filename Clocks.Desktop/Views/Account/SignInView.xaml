@@ -8,6 +8,30 @@
              d:DesignHeight="450" d:DesignWidth="800">
 
     <Grid>
+        <Grid.RowDefinitions >
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+
+
+        <TextBlock Text="Sign in" Grid.Row="0" TextAlignment="Center" FontWeight="DemiBold" FontSize="30" />
+
+        <controls:LabelAndTextControl Grid.Row="1" Text="{Binding Login, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                      Caption="Login" Margin="10" Grid.RowSpan="2"></controls:LabelAndTextControl>
+
+        <controls:LabelAndPasswordControl Grid.Row="2" Grid.Column="0"  Password="{Binding Password, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                                          Caption="Password" Margin="10" Grid.RowSpan="2"></controls:LabelAndPasswordControl>
+
+        <Button Grid.Row="4"  Margin="30 4" Content="Sign In" FontSize="10" Command="{Binding SignInCommand}" CommandParameter="{Binding ElementName=PassBox}" Background="Aquamarine"/>
+        <Button Grid.Row="5"   Margin="30 4" Content="Close" FontSize="10" Command="{Binding CloseCommand}"/>
+        <TextBlock Text="Haven't account?" Grid.Row="6" VerticalAlignment="Center" TextAlignment="Right" FontStyle="Italic" FontSize="20"/>
+        <Button Grid.Row="7"  HorizontalAlignment="Right" Margin="4" Content="Sign Up" FontSize="13" Command="{Binding SignUpCommand}" Background="LightSkyBlue"/>
 
     </Grid>
 
