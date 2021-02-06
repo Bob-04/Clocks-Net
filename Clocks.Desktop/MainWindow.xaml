@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Clocks.Desktop"
+        xmlns:fa="http://schemas.fontawesome.io/icons/"
         mc:Ignorable="d"
         Title="MainWindow" Height="600" Width="800">
 
@@ -16,7 +17,7 @@
         <TextBlock Text="Clocks" TextAlignment="Center" FontWeight="ExtraBlack" FontSize="50" Foreground="Green" />
 
         <ContentControl Name="_contentControl" Grid.Row="1" IsEnabled="{Binding IsControlEnabled, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></ContentControl>
-        <!--<fa:ImageAwesome Name="_loader" Grid.Row="1" Icon="Refresh" Width="50" Height="50" Spin="True" Visibility="{Binding LoaderVisibility, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></fa:ImageAwesome>-->
+        <fa:ImageAwesome Name="_loader" Grid.Row="1" Icon="Refresh" Width="50" Height="50" Spin="True" Visibility="{Binding LoaderVisibility, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"></fa:ImageAwesome>
     </Grid>
 
 </Window>

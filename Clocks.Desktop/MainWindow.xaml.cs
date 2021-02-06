@@ -22,6 +22,7 @@ namespace Clocks.Desktop
             NavigationManager.Instance.Initialize(new InitializationNavigationModel(this));
 
             NavigationManager.Instance.Navigate(ViewType.SignIn);
+
         }
     }
 }
