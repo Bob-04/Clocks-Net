@@ -2,11 +2,10 @@
 using Clocks.Desktop.Tools;
 using Clocks.Desktop.Tools.Managers;
 using Clocks.Desktop.Tools.Navigation;
-using Clocks.Shared.DtoModels;
 
 namespace Clocks.Desktop.ViewModels.Account
 {
-    internal class SignInViewModel: BaseViewModel
+    internal class SignInViewModel : BaseViewModel
     {
         private string _login;
         private string _password;
@@ -40,27 +39,26 @@ namespace Clocks.Desktop.ViewModels.Account
 
         private async void SignInImplementation(object obj)
         {
-
+            var res = await StationManager.ServerClient.SignIn(_login, _password);
         }
 
-        private bool CanSignInExecute(object obj)
-        {
-            return !string.IsNullOrWhiteSpace(_login) &&
-                 !string.IsNullOrWhiteSpace(_password);
-        }
+        private bool CanSignInExecute(object obj) =>
+            !string.IsNullOrWhiteSpace(_login) && !string.IsNullOrWhiteSpace(_password);
 
         public ICommand SignUpCommand =>
-            _toSignUpCommand ??= new RelayCommand<object>(ToSignUpImplementation);
-        private void ToSignUpImplementation(object obj)
+            _toSignUpCommand ??= new RelayCommand<object>(SignUpImplementation);
+
+        private static void SignUpImplementation(object obj)
         {
             NavigationManager.Instance.Navigate(ViewType.SignUp);
         }
 
         public ICommand CloseCommand =>
             _closeCommand ??= new RelayCommand<object>(CloseExecute);
+
         private void CloseExecute(object obj)
         {
-            //StationManager.CloseApp();
+            StationManager.CloseApp();
         }
     }
 }
