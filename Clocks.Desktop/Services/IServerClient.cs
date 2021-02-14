@@ -5,7 +5,7 @@ namespace Clocks.Desktop.Services
 {
     internal interface IServerClient
     {
-        Task<bool> SignIn(string login, string password);
-        Task<bool> SignUp(UserDto user);
+        Task<UserDto> SignIn(string login, string password);
+        Task<UserDto> SignUp(string login, string password);
     }
 }

@@ -1,9 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Clocks.Data.Models;
+using Clocks.Shared.DtoModels;
 using Clocks.Shared.DtoModels.Account;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace Clocks.WebApi.Controllers
 {
@@ -13,18 +13,15 @@ namespace Clocks.WebApi.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
-        private readonly ILogger<AccountsController> _logger;
 
-        public AccountsController(UserManager<User> userManager, SignInManager<User> signInManager,
-            ILogger<AccountsController> logger)
+        public AccountsController(UserManager<User> userManager, SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
-            _logger = logger;
         }
 
         [HttpPost("signin")]
-        public async Task<IActionResult> SignIn(SignInRequest request)
+        public async Task<IActionResult> SignIn([FromBody] SignInRequest request)
         {
             var result = await _signInManager.PasswordSignInAsync(
                 request.Username, request.Password, true, false);
@@ -33,7 +30,9 @@ namespace Clocks.WebApi.Controllers
                 return Unauthorized();
             }
 
-            return Accepted();
+            var user = await _userManager.GetUserAsync(User);
+
+            return Accepted(new UserDto {Username = user.UserName});
         }
 
         [HttpGet("aaa")]
