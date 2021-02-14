@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>c5353b83-3ccb-4874-9dba-e09b94ea3f1b</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Clocks.Data\Clocks.Data.csproj" />
+    <ProjectReference Include="..\Clocks.Shared\Clocks.Shared.csproj" />
+  </ItemGroup>
+
+</Project>
