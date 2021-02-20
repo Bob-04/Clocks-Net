@@ -21,27 +21,32 @@ namespace Clocks.Desktop.Services
                 new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public async Task<UserDto> SignIn(string login, string password)
+        public async Task<UserDto> SignIn(SignInRequest request)
         {
-            var request = new SignInRequest
-            {
-                Username = login,
-                Password = password
-            };
-
             var response = await _httpClient.PostAsJsonAsync("api/accounts/signin", request);
             if (!response.IsSuccessStatusCode)
             {
                 return null;
             }
 
-            var responseString = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<UserDto>(responseString);
+            return await DeserializeResponse<UserDto>(response);
         }
 
-        public async Task<UserDto> SignUp(string login, string password)
+        public async Task<UserDto> SignUp(SignUpRequest request)
         {
-            return null;
+            var response = await _httpClient.PostAsJsonAsync("api/accounts/signup", request);
+            if (!response.IsSuccessStatusCode)
+            {
+                return null;
+            }
+
+            return await DeserializeResponse<UserDto>(response);
+        }
+
+        private static async Task<T> DeserializeResponse<T>(HttpResponseMessage response)
+        {
+            var responseString = await response.Content.ReadAsStringAsync();
+            return JsonSerializer.Deserialize<T>(responseString);
         }
     }
 }

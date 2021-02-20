@@ -2,6 +2,7 @@
 using Clocks.Desktop.Tools;
 using Clocks.Desktop.Tools.Managers;
 using Clocks.Desktop.Tools.Navigation;
+using Clocks.Shared.DtoModels.Account;
 
 namespace Clocks.Desktop.ViewModels.Account
 {
@@ -39,7 +40,24 @@ namespace Clocks.Desktop.ViewModels.Account
 
         private async void SignInImplementation(object obj)
         {
-            var res = await StationManager.ServerClient.SignIn(_login, _password);
+            LoaderManager.Instance.ShowLoader();
+
+            var user = await StationManager.ServerClient.SignIn(new SignInRequest
+            {
+                Username = _login,
+                Password = _password
+            });
+
+            LoaderManager.Instance.HideLoader();
+
+            if (user != null)
+            {
+                NavigationManager.Instance.Navigate(ViewType.Main);
+            }
+            else
+            {
+
+            }
         }
 
         private bool CanSignInExecute(object obj) =>

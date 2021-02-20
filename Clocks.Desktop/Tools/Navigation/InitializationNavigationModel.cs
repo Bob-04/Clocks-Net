@@ -21,7 +21,7 @@ namespace Clocks.Desktop.Tools.Navigation
                     ViewsDictionary.Add(viewType, new SignInView());
                     break;
                 case ViewType.SignUp:
-                    // TODO
+                    ViewsDictionary.Add(viewType, new SignUpView());
                     break;
                 default:
                     throw new ArgumentNullException();

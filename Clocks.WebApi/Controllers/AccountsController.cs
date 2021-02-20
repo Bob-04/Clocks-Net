@@ -30,15 +30,33 @@ namespace Clocks.WebApi.Controllers
                 return Unauthorized();
             }
 
-            var user = await _userManager.GetUserAsync(User);
-
-            return Accepted(new UserDto {Username = user.UserName});
+            return Accepted(new UserDto {Username = request.Username});
         }
 
-        [HttpGet("aaa")]
-        public async Task<IActionResult> Get()
+        [HttpPost("signup")]
+        public async Task<IActionResult> SignUp([FromBody] SignUpRequest request)
         {
-            return null;
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
+
+            var user = new User
+            {
+                UserName = request.Username,
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Email = request.Email,
+            };
+
+            var result = await _userManager.CreateAsync(user, request.Password);
+            if (!result.Succeeded)
+            {
+                return Problem();
+            }
+
+            await _signInManager.SignInAsync(user, true);
+            return Accepted(new UserDto {Username = user.UserName});
         }
     }
 }
