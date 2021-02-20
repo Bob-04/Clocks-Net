@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Clocks.Shared.DtoModels;
 using Clocks.Shared.DtoModels.Account;
+using Newtonsoft.Json;
 
 namespace Clocks.Desktop.Services
 {
@@ -46,7 +46,7 @@ namespace Clocks.Desktop.Services
         private static async Task<T> DeserializeResponse<T>(HttpResponseMessage response)
         {
             var responseString = await response.Content.ReadAsStringAsync();
-            return JsonSerializer.Deserialize<T>(responseString);
+            return JsonConvert.DeserializeObject<T>(responseString);
         }
     }
 }

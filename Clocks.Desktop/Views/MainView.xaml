@@ -5,8 +5,54 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:Clocks.Desktop.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="510" d:DesignWidth="780">
     <Grid>
-            
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="30" />
+            <RowDefinition Height="30" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="80"/>
+        </Grid.ColumnDefinitions>
+        <Grid.Resources>
+            <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="DodgerBlue" />
+        </Grid.Resources>
+
+        <TextBlock Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Margin="10 0" FontWeight="DemiBold" FontSize="36">
+            <Run Text="{Binding MyModel.FirstName ,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <Run Text=" " />
+            <Run Text="{Binding MyModel.LastName ,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        </TextBlock>
+        <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="10 0" FontStyle="Italic" FontSize="20" Text="{Binding MyModel.Email, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+        <TextBlock Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="10 0" FontStyle="Italic" FontSize="20" Text="{Binding MyModel.LastLoginDate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+
+        <Button Grid.Row="0" Grid.Column="2" Content="Sign out" HorizontalAlignment="Right" FontSize="20" VerticalAlignment="Center" Command="{Binding SignOutCommand}" Background="LightPink" />
+
+        <DataGrid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" SelectedItem="{Binding SelectedClock, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Clocks, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                  CanUserSortColumns="False" SelectionMode="Single" AutoGenerateColumns="False" CanUserResizeColumns="False" CanUserReorderColumns="False" RowHeight="50" Padding="10">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Width="*" Header="Timezone">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ComboBox FontSize="25" ItemsSource="{Binding DataContext.Timezones, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                                      SelectedItem="{Binding Zone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+
+                <DataGridTextColumn Width="2*" Header="Time" Binding="{Binding CurrentTime, Mode=OneWay}" FontSize="30"></DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Button Grid.Row="3" Grid.Column="0" Margin="50 4" Content="Add" FontSize="15" Command="{Binding AddClockCommand}" Background="LightGreen"/>
+        <Button Grid.Row="3" Grid.Column="1" Margin="50 4" Content="Delete" FontSize="15" Command="{Binding DeleteClockCommand}" Background="LightSalmon"/>
+        <Button Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Margin="100 4" Content="Close" FontSize="15" Command="{Binding CloseCommand}"/>
+
     </Grid>
 </UserControl>

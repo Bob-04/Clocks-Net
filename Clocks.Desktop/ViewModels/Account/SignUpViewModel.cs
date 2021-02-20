@@ -109,6 +109,7 @@ namespace Clocks.Desktop.ViewModels.Account
 
             if (user != null)
             {
+                StationManager.CurrentUser = user;
                 NavigationManager.Instance.Navigate(ViewType.Main);
             }
             else
