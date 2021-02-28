@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media.Animation;
 using Clocks.Desktop.Tools;
 using Clocks.Desktop.Tools.Managers;
+using Clocks.Desktop.Tools.Navigation;
 using Clocks.Shared.DtoModels;
 
 namespace Clocks.Desktop.ViewModels
@@ -28,15 +29,15 @@ namespace Clocks.Desktop.ViewModels
             set
             {
                 _clocks = value;
-                OnPropertyChanged();
+                // TODO OnPropertyChanged();
             }
         }
 
         public ObservableCollection<TimeZoneInfo> Timezones { get; set; }
 
-        private Clock _selectedClock;
+        private ClockDto _selectedClock;
 
-        public Clock SelectedClock
+        public ClockDto SelectedClock
         {
             get => _selectedClock;
             set
@@ -51,9 +52,8 @@ namespace Clocks.Desktop.ViewModels
 
         internal MainViewModel()
         {
-            _userName = StationManager.CurrentUser.Username;
+            _userName = StationManager.CurrentUser?.Username;
             Timezones = new ObservableCollection<TimeZoneInfo>(TimeZoneInfo.GetSystemTimeZones());
-            Clocks = new ObservableCollection<ClockDto>();
             InitClocks();
             _updatingTimeThreadAvailable = true;
             (_updatingTimeThread = new Thread(UpdateTimes)).Start();
@@ -70,32 +70,30 @@ namespace Clocks.Desktop.ViewModels
             }
             catch (Exception e)
             {
+                Clocks = new ObservableCollection<ClockDto>();
                 MessageBox.Show("Server unavailable");
             }
 
             LoaderManager.Instance.HideLoader();
         }
 
-        async void Clock_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        async void Clock_PropertyChanged(object sender, PropertyChangedEventArgs eventArgs)
         {
-            //if (e.PropertyName == "Zone")
-            //{
-            //    LoaderManager.Instance.ShowLoader();
-            //    await Task.Run(() =>
-            //    {
-            //        try
-            //        {
-            //            StationManager.WcfClient.UpdateClock(sender as Clock);
-            //        }
-            //        catch (System.ServiceModel.EndpointNotFoundException ex)
-            //        {
-            //            StationManager.LogError("Server unavailable");
-            //            StationManager.LogError(ex.Message);
-            //            MessageBox.Show("Server unavailable");
-            //        }
-            //    });
-            //    LoaderManager.Instance.HideLoader();
-            //}
+            if (eventArgs.PropertyName == "Name" || eventArgs.PropertyName == "Zone")
+            {
+                LoaderManager.Instance.ShowLoader();
+
+                try
+                {
+                    await StationManager.ServerClient.EditClock(sender as ClockDto);
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show("Server unavailable");
+                }
+
+                LoaderManager.Instance.HideLoader();
+            }
         }
 
         #region Commands
@@ -105,32 +103,31 @@ namespace Clocks.Desktop.ViewModels
 
         private async void AddExecute(object obj)
         {
-            //var newClock = new Clock(
-            //    (Timezone)Enum.Parse(typeof(Timezone), Timezone.Utc0.ToString()),
-            //    MyModel);
-            //newClock.PropertyChanged += Clock_PropertyChanged;
+            var newClock = new ClockDto
+            {
+                Name = "new clock",
+                TimeZoneId = TimeZoneInfo.Utc.Id
+            };
+            newClock.PropertyChanged += Clock_PropertyChanged;
 
-            //LoaderManager.Instance.ShowLoader();
-            //var result = await Task.Run(() =>
-            //{
-            //    try
-            //    {
-            //        StationManager.WcfClient.AddClock(newClock);
-            //    }
-            //    catch (System.ServiceModel.EndpointNotFoundException ex)
-            //    {
-            //        StationManager.LogError("Server unavailable");
-            //        StationManager.LogError(ex.Message);
-            //        MessageBox.Show("Server unavailable");
-            //        return false;
-            //    }
-            //    return true;
-            //});
-            //LoaderManager.Instance.HideLoader();
-            //if (result)
-            //{
-            //    Clocks.Add(newClock);
-            //}
+            LoaderManager.Instance.ShowLoader();
+
+            var result = false;
+            try
+            {
+                result = await StationManager.ServerClient.AddClock(newClock);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Server unavailable");
+            }
+
+            LoaderManager.Instance.HideLoader();
+
+            if (result)
+            {
+                Clocks.Add(newClock);
+            }
         }
 
         public ICommand DeleteClockCommand =>
@@ -138,27 +135,24 @@ namespace Clocks.Desktop.ViewModels
 
         private async void DeleteExecute(object obj)
         {
-            //LoaderManager.Instance.ShowLoader();
-            //var result = await Task.Run(() =>
-            //{
-            //    try
-            //    {
-            //        StationManager.WcfClient.DeleteClock(SelectedClock);
-            //    }
-            //    catch (System.ServiceModel.EndpointNotFoundException ex)
-            //    {
-            //        StationManager.LogError("Server unavailable");
-            //        StationManager.LogError(ex.Message);
-            //        MessageBox.Show("Server unavailable");
-            //        return false;
-            //    }
-            //    return true;
-            //});
-            //LoaderManager.Instance.HideLoader();
-            //if (result)
-            //{
-            //    Clocks.Remove(SelectedClock);
-            //}
+            LoaderManager.Instance.ShowLoader();
+
+            var result = false;
+            try
+            {
+                result = await StationManager.ServerClient.RemoveClock(SelectedClock);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Server unavailable");
+            }
+
+            LoaderManager.Instance.HideLoader();
+
+            if (result)
+            {
+                Clocks.Remove(SelectedClock);
+            }
         }
 
         public ICommand SignOutCommand =>
@@ -166,27 +160,24 @@ namespace Clocks.Desktop.ViewModels
 
         private async void SignOutExecute(object obj)
         {
-            //LoaderManager.Instance.ShowLoader();
-            //await Task.Run(() =>
-            //{
-            //    try
-            //    {
-            //        StationManager.WcfClient.UpdateLastSeenDateByLogin(StationManager.CurrentUser.Login);
-            //    }
-            //    catch (System.ServiceModel.EndpointNotFoundException ex)
-            //    {
-            //        StationManager.LogError("Server unavailable");
-            //        StationManager.LogError(ex.Message);
-            //        MessageBox.Show("Server unavailable," +
-            //                        " your last seen date will not be saved");
-            //    }
-            //});
-            //LoaderManager.Instance.HideLoader();
+            LoaderManager.Instance.ShowLoader();
 
-            //StationManager.CurrentUser = null;
-            //StopUpdatingTimes();
+            try
+            {
+                await StationManager.ServerClient.SignOut();
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Server unavailable");
+            }
+
+            LoaderManager.Instance.HideLoader();
+
+            StationManager.CurrentUser = null;
+            StopUpdatingTimes();
             //SerializationManager.DeleteSerialization();
-            //NavigationManager.Instance.Navigate(ViewType.SignIn);
+
+            NavigationManager.Instance.Navigate(ViewType.SignIn);
         }
 
         public ICommand CloseCommand =>
@@ -224,7 +215,7 @@ namespace Clocks.Desktop.ViewModels
             while (_updatingTimeThreadAvailable && Thread.CurrentThread.IsAlive)
             {
                 var curUtcDateTime = DateTime.UtcNow;
-                foreach (var clock in Clocks)
+                foreach (var clock in Clocks.Where(c => c.TimeZoneId != null))
                 {
                     clock.CurrentTime = TimeZoneInfo.ConvertTimeFromUtc(curUtcDateTime,
                         TimeZoneInfo.FindSystemTimeZoneById(clock.TimeZoneId));

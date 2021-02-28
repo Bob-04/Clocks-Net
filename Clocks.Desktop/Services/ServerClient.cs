@@ -44,6 +44,11 @@ namespace Clocks.Desktop.Services
             return await DeserializeResponse<UserDto>(response);
         }
 
+        public async Task SignOut()
+        {
+            await _httpClient.PostAsync("api/accounts/signout", null);
+        }
+
         public async Task<IEnumerable<ClockDto>> GetUserClocks()
         {
             var response = await _httpClient.GetAsync("api/clocks");
@@ -53,6 +58,39 @@ namespace Clocks.Desktop.Services
             }
 
             return await DeserializeResponse<IEnumerable<ClockDto>>(response);
+        }
+
+        public async Task<bool> AddClock(ClockDto clock)
+        {
+            var response = await _httpClient.PostAsJsonAsync("api/clocks", clock);
+            if (!response.IsSuccessStatusCode)
+            {
+                return false;
+            }
+
+            return await DeserializeResponse<bool>(response);
+        }
+
+        public async Task<bool> EditClock(ClockDto clock)
+        {
+            var response = await _httpClient.PutAsJsonAsync($"api/clocks/{clock.Id}", clock);
+            if (!response.IsSuccessStatusCode)
+            {
+                return false;
+            }
+
+            return await DeserializeResponse<bool>(response);
+        }
+
+        public async Task<bool> RemoveClock(ClockDto clock)
+        {
+            var response = await _httpClient.DeleteAsync($"api/clocks/{clock.Id}");
+            if (!response.IsSuccessStatusCode)
+            {
+                return false;
+            }
+
+            return await DeserializeResponse<bool>(response);
         }
 
         private static async Task<T> DeserializeResponse<T>(HttpResponseMessage response)

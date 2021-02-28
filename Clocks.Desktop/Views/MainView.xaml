@@ -37,6 +37,8 @@
         <DataGrid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" SelectedItem="{Binding SelectedClock, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Clocks, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                   CanUserSortColumns="False" SelectionMode="Single" AutoGenerateColumns="False" CanUserResizeColumns="False" CanUserReorderColumns="False" RowHeight="50" Padding="10">
             <DataGrid.Columns>
+                <DataGridTextColumn Width="*" Header="Time" Binding="{Binding Name, Mode=TwoWay}" FontSize="26"></DataGridTextColumn>
+
                 <DataGridTemplateColumn Width="*" Header="Timezone">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -46,7 +48,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
 
-                <DataGridTextColumn Width="2*" Header="Time" Binding="{Binding CurrentTime, Mode=OneWay}" FontSize="30"></DataGridTextColumn>
+                <DataGridTextColumn Width="*" Header="Time" Binding="{Binding CurrentTime, Mode=OneWay}" FontSize="30"></DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
 

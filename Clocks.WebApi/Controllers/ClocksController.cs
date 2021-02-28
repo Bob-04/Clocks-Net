@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Clocks.Data;
@@ -38,6 +39,56 @@ namespace Clocks.WebApi.Controllers
                 .ToListAsync();
 
             return clocks;
+        }
+
+        [HttpPost]
+        public async Task<bool> AddUserClock(ClockDto clock)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            _dbContext.Clocks.Add(new Clock
+            {
+                UserId = user.Id,
+                Name = clock.Name,
+                TimeZoneId = clock.TimeZoneId
+            });
+
+            await _dbContext.SaveChangesAsync();
+
+            return true;
+        }
+
+        [HttpPut("{id}")]
+        public async Task<bool> EditUserClock(Guid id, ClockDto clock)
+        {
+            var dbClock = await _dbContext.Clocks.FirstOrDefaultAsync(c => c.Id == id);
+            if (dbClock == null)
+            {
+                return false;
+            }
+
+            dbClock.Name = clock.Name;
+            dbClock.TimeZoneId = clock.TimeZoneId;
+
+            _dbContext.Clocks.Update(dbClock);
+            await _dbContext.SaveChangesAsync();
+
+            return true;
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<bool> RemoveUserClock(Guid id)
+        {
+            var dbClock = await _dbContext.Clocks.FirstOrDefaultAsync(c => c.Id == id);
+            if (dbClock == null)
+            {
+                return false;
+            }
+
+            _dbContext.Clocks.Remove(dbClock);
+            await _dbContext.SaveChangesAsync();
+
+            return true;
         }
     }
 }

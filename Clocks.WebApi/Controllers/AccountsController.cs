@@ -58,5 +58,13 @@ namespace Clocks.WebApi.Controllers
             await _signInManager.SignInAsync(user, true);
             return Accepted(new UserDto {Username = user.UserName});
         }
+
+        [HttpPost("signout")]
+        public async Task<IActionResult> SignOut()
+        {
+            await _signInManager.SignOutAsync();
+
+            return Accepted();
+        }
     }
 }
