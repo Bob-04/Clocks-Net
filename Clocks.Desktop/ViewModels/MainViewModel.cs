@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -9,7 +8,6 @@ using System.Windows.Input;
 using System.Windows.Media.Animation;
 using Clocks.Desktop.Tools;
 using Clocks.Desktop.Tools.Managers;
-using Clocks.Desktop.Tools.Navigation;
 using Clocks.Shared.DtoModels;
 
 namespace Clocks.Desktop.ViewModels
@@ -63,25 +61,19 @@ namespace Clocks.Desktop.ViewModels
 
         private async void InitClocks()
         {
-            //LoaderManager.Instance.ShowLoader();
-            //await Task.Run(() =>
-            //{
-            //    try
-            //    {
-            //        StationManager.LogInfo($"Attempt to get all clocks " +
-            //                               $"for user {StationManager.CurrentUser.Guid}");
-            //        Clocks = StationManager.WcfClient.ShowAllUserClocks(StationManager.CurrentUser.Guid);
-            //        foreach (Clock c in Clocks)
-            //            c.PropertyChanged += Clock_PropertyChanged;
-            //    }
-            //    catch (System.ServiceModel.EndpointNotFoundException ex)
-            //    {
-            //        StationManager.LogError("Server unavailable");
-            //        StationManager.LogError(ex.Message);
-            //        MessageBox.Show("Server unavailable");
-            //    }
-            //});
-            //LoaderManager.Instance.HideLoader();
+            LoaderManager.Instance.ShowLoader();
+
+            try
+            {
+                var clocks = await StationManager.ServerClient.GetUserClocks();
+                Clocks = new ObservableCollection<ClockDto>(clocks);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Server unavailable");
+            }
+
+            LoaderManager.Instance.HideLoader();
         }
 
         async void Clock_PropertyChanged(object sender, PropertyChangedEventArgs e)

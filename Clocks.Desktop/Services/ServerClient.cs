@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -41,6 +42,17 @@ namespace Clocks.Desktop.Services
             }
 
             return await DeserializeResponse<UserDto>(response);
+        }
+
+        public async Task<IEnumerable<ClockDto>> GetUserClocks()
+        {
+            var response = await _httpClient.GetAsync("api/clocks");
+            if (!response.IsSuccessStatusCode)
+            {
+                return null;
+            }
+
+            return await DeserializeResponse<IEnumerable<ClockDto>>(response);
         }
 
         private static async Task<T> DeserializeResponse<T>(HttpResponseMessage response)
