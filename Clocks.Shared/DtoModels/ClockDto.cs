@@ -8,7 +8,17 @@ namespace Clocks.Shared.DtoModels
     {
         public Guid Id { get; set; }
 
-        public string Name { get; set; }
+        private string _name { get; set; }
+
+        public string Name
+        {
+            get => _name;
+            set
+            {
+                _name = value;
+                OnPropertyChanged(nameof(Name));
+            }
+        }
 
         private string _timeZoneId { get; set; }
 
