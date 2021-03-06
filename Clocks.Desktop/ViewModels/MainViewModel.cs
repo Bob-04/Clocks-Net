@@ -16,11 +16,12 @@ namespace Clocks.Desktop.ViewModels
 {
     internal class MainViewModel : BaseViewModel
     {
-        private string _userName;
         private ICommand _deleteCommand;
         private ICommand _addCommand;
         private ICommand _signOutCommand;
         private ICommand _closeCommand;
+
+        public string Username { get; }
 
         private ObservableCollection<ClockDto> _clocks;
 
@@ -53,7 +54,7 @@ namespace Clocks.Desktop.ViewModels
 
         internal MainViewModel()
         {
-            _userName = StationManager.CurrentUser?.Username;
+            Username = StationManager.CurrentUser?.Username;
             TimezoneIds = new ObservableCollection<string>(TimeZoneInfo.GetSystemTimeZones().Select(t => t.Id));
             Clocks = new ObservableCollection<ClockDto>();
             InitClocks();
