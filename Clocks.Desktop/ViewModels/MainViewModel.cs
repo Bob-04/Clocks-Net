@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -73,7 +74,7 @@ namespace Clocks.Desktop.ViewModels
                     clock.PropertyChanged += Clock_PropertyChanged;
                 }
             }
-            catch (Exception e)
+            catch (HttpRequestException)
             {
                 Clocks = new ObservableCollection<ClockDto>();
                 MessageBox.Show("Server unavailable");
@@ -93,7 +94,7 @@ namespace Clocks.Desktop.ViewModels
                 {
                     await StationManager.ServerClient.EditClock(sender as ClockDto);
                 }
-                catch (Exception e)
+                catch (HttpRequestException)
                 {
                     MessageBox.Show("Server unavailable");
                 }
@@ -127,7 +128,7 @@ namespace Clocks.Desktop.ViewModels
                     Clocks.Add(newClock);
                 }
             }
-            catch (Exception e)
+            catch (HttpRequestException)
             {
                 MessageBox.Show("Server unavailable");
             }
@@ -150,7 +151,7 @@ namespace Clocks.Desktop.ViewModels
                     Clocks.Remove(SelectedClock);
                 }
             }
-            catch (Exception e)
+            catch (HttpRequestException)
             {
                 MessageBox.Show("Server unavailable");
             }
@@ -169,7 +170,7 @@ namespace Clocks.Desktop.ViewModels
             {
                 await StationManager.ServerClient.SignOut();
             }
-            catch (Exception e)
+            catch (HttpRequestException)
             {
                 MessageBox.Show("Server unavailable");
             }

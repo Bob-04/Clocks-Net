@@ -1,4 +1,7 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Net.Http;
+using System.Windows;
+using System.Windows.Input;
 using Clocks.Desktop.Tools;
 using Clocks.Desktop.Tools.Managers;
 using Clocks.Desktop.Tools.Navigation;
@@ -42,23 +45,26 @@ namespace Clocks.Desktop.ViewModels.Account
         {
             LoaderManager.Instance.ShowLoader();
 
-            var user = await StationManager.ServerClient.SignIn(new SignInRequest
+            try
             {
-                Username = _login,
-                Password = _password
-            });
+                var user = await StationManager.ServerClient.SignIn(new SignInRequest
+                {
+                    Username = _login,
+                    Password = _password
+                });
+
+                if (user != null)
+                {
+                    StationManager.CurrentUser = user;
+                    NavigationManager.Instance.Navigate(ViewType.Main);
+                }
+            }
+            catch (HttpRequestException)
+            {
+                MessageBox.Show("Server unavailable");
+            }
 
             LoaderManager.Instance.HideLoader();
-
-            if (user != null)
-            {
-                StationManager.CurrentUser = user;
-                NavigationManager.Instance.Navigate(ViewType.Main);
-            }
-            else
-            {
-
-            }
         }
 
         private bool CanSignInExecute(object obj) =>

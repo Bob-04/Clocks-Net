@@ -1,4 +1,6 @@
-﻿using System.Windows.Input;
+﻿using System.Net.Http;
+using System.Windows;
+using System.Windows.Input;
 using Clocks.Desktop.Tools;
 using Clocks.Desktop.Tools.Managers;
 using Clocks.Desktop.Tools.Navigation;
@@ -95,23 +97,30 @@ namespace Clocks.Desktop.ViewModels.Account
         {
             LoaderManager.Instance.ShowLoader();
 
-            var user = await StationManager.ServerClient.SignUp(new SignUpRequest
+            try
             {
-                Username = _login,
-                FirstName = _firstName,
-                LastName = _lastName,
-                Email = _email,
-                Password = _password,
-                RepeatPassword = _repeatedPassword
-            });
+                var user = await StationManager.ServerClient.SignUp(new SignUpRequest
+                {
+                    Username = _login,
+                    FirstName = _firstName,
+                    LastName = _lastName,
+                    Email = _email,
+                    Password = _password,
+                    RepeatPassword = _repeatedPassword
+                });
+
+                if (user != null)
+                {
+                    StationManager.CurrentUser = user;
+                    NavigationManager.Instance.Navigate(ViewType.Main);
+                }
+            }
+            catch (HttpRequestException)
+            {
+                MessageBox.Show("Server unavailable");
+            }
 
             LoaderManager.Instance.HideLoader();
-
-            if (user != null)
-            {
-                StationManager.CurrentUser = user;
-                NavigationManager.Instance.Navigate(ViewType.Main);
-            }
         }
 
         private void ToSignIn(object obj)
