@@ -33,7 +33,7 @@ namespace Clocks.Desktop.ViewModels
             }
         }
 
-        public ObservableCollection<TimeZoneInfo> Timezones { get; set; }
+        public ObservableCollection<string> TimezoneIds { get; set; }
 
         private ClockDto _selectedClock;
 
@@ -53,7 +53,7 @@ namespace Clocks.Desktop.ViewModels
         internal MainViewModel()
         {
             _userName = StationManager.CurrentUser?.Username;
-            Timezones = new ObservableCollection<TimeZoneInfo>(TimeZoneInfo.GetSystemTimeZones());
+            TimezoneIds = new ObservableCollection<string>(TimeZoneInfo.GetSystemTimeZones().Select(t => t.Id));
             Clocks = new ObservableCollection<ClockDto>();
             InitClocks();
             _updatingTimeThreadAvailable = true;
@@ -70,7 +70,7 @@ namespace Clocks.Desktop.ViewModels
                 Clocks = new ObservableCollection<ClockDto>(clocks);
                 foreach (var clock in Clocks)
                 {
-                    //clock.PropertyChanged += Clock_PropertyChanged;
+                    clock.PropertyChanged += Clock_PropertyChanged;
                 }
             }
             catch (Exception e)
@@ -84,7 +84,8 @@ namespace Clocks.Desktop.ViewModels
 
         async void Clock_PropertyChanged(object sender, PropertyChangedEventArgs eventArgs)
         {
-            if (eventArgs.PropertyName == "Name" || eventArgs.PropertyName == "Zone")
+            if (eventArgs.PropertyName == nameof(ClockDto.Name) ||
+                eventArgs.PropertyName == nameof(ClockDto.TimeZoneId))
             {
                 LoaderManager.Instance.ShowLoader();
 

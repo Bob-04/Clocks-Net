@@ -44,8 +44,8 @@
                 <DataGridTemplateColumn Width="*" Header="Timezone">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <ComboBox FontSize="25" ItemsSource="{Binding DataContext.Timezones, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
-                                      SelectedItem="{Binding Zone, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            <ComboBox FontSize="25" ItemsSource="{Binding DataContext.TimezoneIds, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=DataGrid}}"
+                                      SelectedItem="{Binding TimeZoneId, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
