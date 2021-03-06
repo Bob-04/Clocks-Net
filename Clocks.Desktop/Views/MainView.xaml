@@ -34,8 +34,10 @@
 
         <Button Grid.Row="0" Grid.Column="2" Content="Sign out" HorizontalAlignment="Right" FontSize="20" VerticalAlignment="Center" Command="{Binding SignOutCommand}" Background="LightPink" />
 
-        <DataGrid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" SelectedItem="{Binding SelectedClock, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ItemsSource="{Binding Clocks, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                  CanUserSortColumns="False" SelectionMode="Single" AutoGenerateColumns="False" CanUserResizeColumns="False" CanUserReorderColumns="False" RowHeight="50" Padding="10">
+        <DataGrid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="3" 
+                  SelectedItem="{Binding SelectedClock, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                  ItemsSource="{Binding Clocks, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                  CanUserSortColumns="False" CanUserAddRows="False" SelectionMode="Single" AutoGenerateColumns="False" CanUserResizeColumns="False" CanUserReorderColumns="False" RowHeight="50" Padding="10">
             <DataGrid.Columns>
                 <DataGridTextColumn Width="*" Header="Time" Binding="{Binding Name, Mode=TwoWay}" FontSize="26"></DataGridTextColumn>
 

@@ -29,7 +29,7 @@ namespace Clocks.Desktop.ViewModels
             set
             {
                 _clocks = value;
-                // TODO OnPropertyChanged();
+                OnPropertyChanged();
             }
         }
 
@@ -54,6 +54,7 @@ namespace Clocks.Desktop.ViewModels
         {
             _userName = StationManager.CurrentUser?.Username;
             Timezones = new ObservableCollection<TimeZoneInfo>(TimeZoneInfo.GetSystemTimeZones());
+            Clocks = new ObservableCollection<ClockDto>();
             InitClocks();
             _updatingTimeThreadAvailable = true;
             (_updatingTimeThread = new Thread(UpdateTimes)).Start();
@@ -67,6 +68,10 @@ namespace Clocks.Desktop.ViewModels
             {
                 var clocks = await StationManager.ServerClient.GetUserClocks();
                 Clocks = new ObservableCollection<ClockDto>(clocks);
+                foreach (var clock in Clocks)
+                {
+                    //clock.PropertyChanged += Clock_PropertyChanged;
+                }
             }
             catch (Exception e)
             {
@@ -175,7 +180,6 @@ namespace Clocks.Desktop.ViewModels
 
             StationManager.CurrentUser = null;
             StopUpdatingTimes();
-            //SerializationManager.DeleteSerialization();
 
             NavigationManager.Instance.Navigate(ViewType.SignIn);
         }
@@ -218,7 +222,7 @@ namespace Clocks.Desktop.ViewModels
                 foreach (var clock in Clocks.Where(c => c.TimeZoneId != null))
                 {
                     clock.CurrentTime = TimeZoneInfo.ConvertTimeFromUtc(curUtcDateTime,
-                        TimeZoneInfo.FindSystemTimeZoneById(clock.TimeZoneId));
+                        TimeZoneInfo.FindSystemTimeZoneById(clock.TimeZoneId)).ToLongTimeString();
                 }
 
                 Thread.Sleep(1000);

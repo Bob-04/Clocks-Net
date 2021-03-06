@@ -11,7 +11,17 @@ namespace Clocks.Shared.DtoModels
         public string Name { get; set; }
         public string TimeZoneId { get; set; }
 
-        public DateTime CurrentTime { get; set; }
+        private string _currentTime { get; set; }
+
+        public string CurrentTime
+        {
+            get => _currentTime;
+            set
+            {
+                _currentTime = value;
+                OnPropertyChanged();
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
