@@ -60,15 +60,15 @@ namespace Clocks.Desktop.Services
             return await DeserializeResponse<IEnumerable<ClockDto>>(response);
         }
 
-        public async Task<bool> AddClock(ClockDto clock)
+        public async Task<Guid> AddClock(ClockDto clock)
         {
             var response = await _httpClient.PostAsJsonAsync("api/clocks", clock);
             if (!response.IsSuccessStatusCode)
             {
-                return false;
+                return Guid.Empty;
             }
 
-            return await DeserializeResponse<bool>(response);
+            return await DeserializeResponse<Guid>(response);
         }
 
         public async Task<bool> EditClock(ClockDto clock)

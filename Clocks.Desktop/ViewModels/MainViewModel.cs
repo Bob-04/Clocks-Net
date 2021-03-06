@@ -114,14 +114,18 @@ namespace Clocks.Desktop.ViewModels
                 Name = "new clock",
                 TimeZoneId = TimeZoneInfo.Utc.Id
             };
-            newClock.PropertyChanged += Clock_PropertyChanged;
 
             LoaderManager.Instance.ShowLoader();
 
-            var result = false;
             try
             {
-                result = await StationManager.ServerClient.AddClock(newClock);
+                var clockId = await StationManager.ServerClient.AddClock(newClock);
+                if (clockId != Guid.Empty)
+                {
+                    newClock.Id = clockId;
+                    newClock.PropertyChanged += Clock_PropertyChanged;
+                    Clocks.Add(newClock);
+                }
             }
             catch (Exception e)
             {
@@ -129,11 +133,6 @@ namespace Clocks.Desktop.ViewModels
             }
 
             LoaderManager.Instance.HideLoader();
-
-            if (result)
-            {
-                Clocks.Add(newClock);
-            }
         }
 
         public ICommand DeleteClockCommand =>
@@ -143,10 +142,13 @@ namespace Clocks.Desktop.ViewModels
         {
             LoaderManager.Instance.ShowLoader();
 
-            var result = false;
             try
             {
-                result = await StationManager.ServerClient.RemoveClock(SelectedClock);
+                var result = await StationManager.ServerClient.RemoveClock(SelectedClock);
+                if (result)
+                {
+                    Clocks.Remove(SelectedClock);
+                }
             }
             catch (Exception e)
             {
@@ -154,11 +156,6 @@ namespace Clocks.Desktop.ViewModels
             }
 
             LoaderManager.Instance.HideLoader();
-
-            if (result)
-            {
-                Clocks.Remove(SelectedClock);
-            }
         }
 
         public ICommand SignOutCommand =>

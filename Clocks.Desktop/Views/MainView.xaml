@@ -39,7 +39,7 @@
                   ItemsSource="{Binding Clocks, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                   CanUserSortColumns="False" CanUserAddRows="False" SelectionMode="Single" AutoGenerateColumns="False" CanUserResizeColumns="False" CanUserReorderColumns="False" RowHeight="50" Padding="10">
             <DataGrid.Columns>
-                <DataGridTextColumn Width="*" Header="Time" Binding="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="26"></DataGridTextColumn>
+                <DataGridTextColumn Width="*" Header="Time" Binding="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" FontSize="26"></DataGridTextColumn>
 
                 <DataGridTemplateColumn Width="*" Header="Timezone">
                     <DataGridTemplateColumn.CellTemplate>

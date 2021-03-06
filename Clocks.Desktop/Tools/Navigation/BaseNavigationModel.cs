@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Clocks.Desktop.Views;
 
 namespace Clocks.Desktop.Tools.Navigation
 {
@@ -15,12 +16,22 @@ namespace Clocks.Desktop.Tools.Navigation
 
         public void Navigate(ViewType viewType)
         {
-            if (!ViewsDictionary.ContainsKey(viewType))
+            INavigable content;
+            if (viewType == ViewType.Main)
             {
-                InitializeView(viewType);
+                content = new MainView();
+            }
+            else
+            {
+                if (!ViewsDictionary.ContainsKey(viewType))
+                {
+                    InitializeView(viewType);
+                }
+
+                content = ViewsDictionary[viewType];
             }
 
-            ContentOwner.ContentControl.Content = ViewsDictionary[viewType];
+            ContentOwner.ContentControl.Content = content;
         }
 
         protected abstract void InitializeView(ViewType viewType);

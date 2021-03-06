@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Clocks.Data;
 using Clocks.Data.Models;
 using Clocks.Shared.DtoModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Clocks.WebApi.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/[controller]")]
     public class ClocksController : ControllerBase
     {
@@ -42,20 +44,21 @@ namespace Clocks.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<bool> AddUserClock(ClockDto clock)
+        public async Task<Guid> AddUserClock(ClockDto clock)
         {
             var user = await _userManager.GetUserAsync(User);
 
-            _dbContext.Clocks.Add(new Clock
+            var dbClock = new Clock
             {
                 UserId = user.Id,
                 Name = clock.Name,
                 TimeZoneId = clock.TimeZoneId
-            });
+            };
 
+            _dbContext.Clocks.Add(dbClock);
             await _dbContext.SaveChangesAsync();
 
-            return true;
+            return dbClock.Id;
         }
 
         [HttpPut("{id}")]

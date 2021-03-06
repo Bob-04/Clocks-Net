@@ -1,5 +1,4 @@
 ﻿using System;
-using Clocks.Desktop.Views;
 using Clocks.Desktop.Views.Account;
 
 namespace Clocks.Desktop.Tools.Navigation
@@ -15,7 +14,7 @@ namespace Clocks.Desktop.Tools.Navigation
             switch (viewType)
             {
                 case ViewType.Main:
-                    ViewsDictionary.Add(viewType, new MainView());
+                    // Not cash
                     break;
                 case ViewType.SignIn:
                     ViewsDictionary.Add(viewType, new SignInView());
