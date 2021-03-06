@@ -7,7 +7,6 @@ namespace Clocks.Desktop.Tools
     [Serializable]
     public static class Logger
     {
-
         public static void Log(string message)
         {
             lock (FileFolderHelper.LogFilepath)

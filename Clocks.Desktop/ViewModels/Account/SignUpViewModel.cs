@@ -112,17 +112,6 @@ namespace Clocks.Desktop.ViewModels.Account
                 StationManager.CurrentUser = user;
                 NavigationManager.Instance.Navigate(ViewType.Main);
             }
-            else
-            {
-
-            }
-
-            if (false)
-            {
-                StationManager.CurrentUser = user;
-                SerializationManager.Serialize(user);
-                NavigationManager.Instance.Navigate(ViewType.Main);
-            }
         }
 
         private void ToSignIn(object obj)
